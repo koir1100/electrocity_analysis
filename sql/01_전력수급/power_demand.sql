@@ -19,9 +19,15 @@ commit;
 -- 전력 수급 테이블 (전력 수급 및 예비 전력 표시 활용)
 CREATE TABLE dev.analytics.electronic_power_demand_summary AS
 (
-  SELECT DAY_AVERAGE, -- ts 용 입니다.
-         SUPPORT_CAPACITY,
-         CURRENT_DEMAND,
-         RESERVED_CAPACITY
-  FROM DEV.ANALYTICS.ELECTRONIC_POWER_DEMAND_SUMMARY;
+  SELECT 
+      DATE(TS) AS DAY_AVERAGE, -- ts 용입니다
+      AVG(SUPPORT_CAPACITY) AS SUPPORT_CAPACITY, 
+      AVG(CURRENT_DEMAND) AS CURRENT_DEMAND, 
+      AVG(SUPPORT_CAPACITY - CURRENT_DEMAND) AS RESERVED_CAPACITY
+  FROM 
+      dev.raw_data.electric_power_demand
+  GROUP BY 
+      DAY_AVERAGE
+  ORDER BY 
+      DAY_AVERAGE
 );
